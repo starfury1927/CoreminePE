@@ -2,11 +2,11 @@
 
 /*
  *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
+ *  ____            _        _   __  __ _                  __  __ ____  
+ * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
  * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
+ * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
+ * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  *
  * @author PocketMine Team
  * @link http://www.pocketmine.net/
- *
+ * 
  *
 */
 
@@ -65,8 +65,6 @@ class Item extends Entity{
 		if(isset($this->namedtag->Thrower)){
 			$this->thrower = $this->namedtag["Thrower"];
 		}
-
-
 		if(!isset($this->namedtag->Item)){
 			$this->close();
 			return;
@@ -75,7 +73,6 @@ class Item extends Entity{
 		assert($this->namedtag->Item instanceof CompoundTag);
 
 		$this->item = ItemItem::nbtDeserialize($this->namedtag->Item);
-
 
 		$this->server->getPluginManager()->callEvent(new ItemSpawnEvent($this));
 	}
@@ -95,7 +92,9 @@ class Item extends Entity{
 		if($this->closed){
 			return false;
 		}
-
+		
+		$this->age++;
+		
 		$tickDiff = $currentTick - $this->lastUpdate;
 		if($tickDiff <= 0 and !$this->justCreated){
 			return true;
@@ -138,9 +137,10 @@ class Item extends Entity{
 				$this->motionY *= -0.5;
 			}
 
-			$this->updateMovement();
+			if($currentTick % 5 ==0)
+				$this->updateMovement();
 
-			if($this->age > 6000){
+			if($this->age > 2000){
 				$this->server->getPluginManager()->callEvent($ev = new ItemDespawnEvent($this));
 				if($ev->isCancelled()){
 					$this->age = 0;

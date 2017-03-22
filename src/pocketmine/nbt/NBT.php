@@ -2,11 +2,11 @@
 
 /*
  *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
+ *  ____            _        _   __  __ _                  __  __ ____  
+ * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
  * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
+ * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
+ * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  *
  * @author PocketMine Team
  * @link http://www.pocketmine.net/
- *
+ * 
  *
 */
 
@@ -38,9 +38,10 @@ use pocketmine\nbt\tag\NamedTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\nbt\tag\Tag;
+use pocketmine\utils\Binary;
 
 #ifndef COMPILE
-use pocketmine\utils\Binary;
+
 #endif
 
 
@@ -133,6 +134,19 @@ class NBT{
 		}
 
 		return true;
+	}
+
+	public static function combineCompoundTags(CompoundTag $tag1, CompoundTag $tag2, bool $override = false) : CompoundTag{
+		$tag1 = clone $tag1;
+		foreach($tag2 as $k => $v){
+			if(!($v instanceof Tag)){
+				continue;
+			}
+			if(!isset($tag1->{$k}) or (isset($tag1->{$k}) and $override)){
+				$tag1->{$k} = clone $v;
+			}
+		}
+		return $tag1;
 	}
 
 	public static function parseJSON($data, &$offset = 0){
@@ -289,7 +303,7 @@ class NBT{
 					throw new \Exception("Syntax error: invalid quote at offset $offset");
 				}
 			}elseif($c === "\\"){
-				$value .= $data{$offset + 1} ?? "";
+				$value .= isset($data{$offset + 1}) ? $data{$offset + 1} : "";
 				++$offset;
 			}elseif($c === "{" and !$inQuotes){
 				if($value !== ""){
@@ -611,7 +625,6 @@ class NBT{
 	public function getArray(){
 		$data = [];
 		self::toArray($data, $this->data);
-		return $data;
 	}
 
 	private static function toArray(array &$data, Tag $tag){

@@ -18,6 +18,7 @@
  *
  *
 */
+
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
@@ -36,10 +37,11 @@ class NetherBrickFence extends Transparent{
 	}
 
 	public function getToolType(){
+		//Different then the woodfences
 		return Tool::TYPE_PICKAXE;
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return "Nether Brick Fence";
 	}
 
@@ -47,10 +49,10 @@ class NetherBrickFence extends Transparent{
 		return ($block instanceof NetherBrickFence) or ($block->isSolid() and !$block->isTransparent());
 	}
 
-	public function getDrops(Item $item){
+	public function getDrops(Item $item) : array{
 		if($item->isPickaxe() >= Tool::TIER_WOODEN){
 			return [
-				[$this->id, $this->meta, 1],
+				[Item::NETHER_BRICK_FENCE, $this->meta, 1],
 			];
 		}else{
 			return [];

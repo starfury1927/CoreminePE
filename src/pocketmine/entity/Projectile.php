@@ -2,11 +2,11 @@
 
 /*
  *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
+ *  ____            _        _   __  __ _                  __  __ ____  
+ * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
  * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
+ * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
+ * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,17 +15,19 @@
  *
  * @author PocketMine Team
  * @link http://www.pocketmine.net/
- *
+ * 
  *
 */
 
 namespace pocketmine\entity;
+
 
 use pocketmine\event\entity\EntityCombustByEntityEvent;
 use pocketmine\event\entity\EntityDamageByChildEntityEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\ProjectileHitEvent;
+use pocketmine\item\Potion;
 use pocketmine\level\Level;
 use pocketmine\level\MovingObjectPosition;
 use pocketmine\math\Vector3;
@@ -139,7 +141,7 @@ abstract class Projectile extends Entity{
 					$motion = sqrt($this->motionX ** 2 + $this->motionY ** 2 + $this->motionZ ** 2);
 					$damage = ceil($motion * $this->damage);
 
-					if($this instanceof Arrow and $this->isCritical){
+					if($this instanceof Arrow and $this->isCritical()){
 						$damage += mt_rand(0, (int) ($damage / 2) + 1);
 					}
 
@@ -149,7 +151,14 @@ abstract class Projectile extends Entity{
 						$ev = new EntityDamageByChildEntityEvent($this->shootingEntity, $this, $movingObjectPosition->entityHit, EntityDamageEvent::CAUSE_PROJECTILE, $damage);
 					}
 
-					$movingObjectPosition->entityHit->attack($ev->getFinalDamage(), $ev);
+					if($movingObjectPosition->entityHit->attack($ev->getFinalDamage(), $ev) === true){
+						if($this instanceof Arrow and $this->getPotionId() != 0){
+							foreach(Potion::getEffectsById($this->getPotionId() - 1) as $effect){
+								$movingObjectPosition->entityHit->addEffect($effect->setDuration($effect->getDuration() / 8));
+							}
+						}
+						$ev->useArmors();
+					}
 
 					$this->hadCollision = true;
 

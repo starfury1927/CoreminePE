@@ -21,6 +21,8 @@
 
 namespace pocketmine\entity;
 
+use pocketmine\Server;
+
 class Attribute{
 
 	const ABSORPTION = 0;
@@ -169,10 +171,10 @@ class Attribute{
 		return $this->currentValue;
 	}
 
-	public function setValue($value, $fit = false, bool $forceSend = false){
+	public function setValue($value, bool $fit = true, bool $shouldSend = false){
 		if($value > $this->getMaxValue() or $value < $this->getMinValue()){
 			if(!$fit){
-				throw new \InvalidArgumentException("Value $value exceeds the range!");
+				Server::getInstance()->getLogger()->error("[Attribute / {$this->getName()}] Value $value exceeds the range!");
 			}
 			$value = min(max($value, $this->getMinValue()), $this->getMaxValue());
 		}
@@ -180,10 +182,11 @@ class Attribute{
 		if($this->currentValue != $value){
 			$this->desynchronized = true;
 			$this->currentValue = $value;
-		}elseif($forceSend){
-			$this->desynchronized = true;
 		}
 
+		if($shouldSend){
+			$this->desynchronized = true;
+		}
 		return $this;
 	}
 

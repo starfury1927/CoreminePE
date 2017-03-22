@@ -28,7 +28,7 @@ abstract class Worker extends \Worker{
 
 	/** @var \ClassLoader */
 	protected $classLoader;
-
+	
 	protected $isKilled = false;
 
 	public function getClassLoader(){
@@ -72,7 +72,7 @@ abstract class Worker extends \Worker{
 		$this->isKilled = true;
 
 		$this->notify();
-
+		
 		if($this->isRunning()){
 			$this->shutdown();
 			$this->notify();

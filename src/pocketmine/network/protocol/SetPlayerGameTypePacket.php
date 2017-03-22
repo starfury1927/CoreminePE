@@ -37,5 +37,4 @@ class SetPlayerGameTypePacket extends DataPacket{
 		$this->reset();
 		$this->putVarInt($this->gamemode);
 	}
-
 }

@@ -2,11 +2,11 @@
 
 /*
  *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
+ *  ____            _        _   __  __ _                  __  __ ____  
+ * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
  * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
+ * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
+ * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  *
  * @author PocketMine Team
  * @link http://www.pocketmine.net/
- *
+ * 
  *
 */
 
@@ -35,10 +35,16 @@ use pocketmine\nbt\tag\StringTag;
 abstract class Tile extends Position{
 
 	const BREWING_STAND = "BrewingStand";
+	const CAULDRON = "Cauldron";
 	const CHEST = "Chest";
+	const DISPENSER = "Dispenser";
+	const DAY_LIGHT_DETECTOR = "DLDetector";
+	const DROPPER = "Dropper";
 	const ENCHANT_TABLE = "EnchantTable";
+	const ENDER_CHEST = "EnderChest";
 	const FLOWER_POT = "FlowerPot";
 	const FURNACE = "Furnace";
+	const HOPPER = "Hopper";
 	const ITEM_FRAME = "ItemFrame";
 	const MOB_SPAWNER = "MobSpawner";
 	const SIGN = "Sign";
@@ -65,11 +71,19 @@ abstract class Tile extends Position{
 	public $tickTimer;
 
 	public static function init(){
+		self::registerTile(BrewingStand::class);
+		self::registerTile(Cauldron::class);
 		self::registerTile(Chest::class);
+		self::registerTile(Dispenser::class);
+		self::registerTile(DLDetector::class);
+		self::registerTile(Dropper::class);
 		self::registerTile(EnchantTable::class);
+		self::registerTile(EnderChest::class);
 		self::registerTile(FlowerPot::class);
 		self::registerTile(Furnace::class);
+		self::registerTile(Hopper::class);
 		self::registerTile(ItemFrame::class);
+		self::registerTile(MobSpawner::class);
 		self::registerTile(Sign::class);
 		self::registerTile(Skull::class);
 	}
@@ -78,9 +92,9 @@ abstract class Tile extends Position{
 	 * @param string      $type
 	 * @param Level       $level
 	 * @param CompoundTag $nbt
-	 * @param             $args
+	 * @param array ...$args
 	 *
-	 * @return Tile
+	 * @return null
 	 */
 	public static function createTile($type, Level $level, CompoundTag $nbt, ...$args){
 		if(isset(self::$knownTiles[$type])){
@@ -173,18 +187,15 @@ abstract class Tile extends Position{
 			unset($this->level->updateTiles[$this->id]);
 			if($this->chunk instanceof Chunk){
 				$this->chunk->removeTile($this);
-				$this->chunk = null;
 			}
 			if(($level = $this->getLevel()) instanceof Level){
 				$level->removeTile($this);
-				$this->setLevel(null);
 			}
-
-			$this->namedtag = null;
+			$this->level = null;
 		}
 	}
 
-	public function getName(){
+	public function getName() : string{
 		return $this->name;
 	}
 

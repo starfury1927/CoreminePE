@@ -2,11 +2,11 @@
 
 /*
  *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
+ *  ____            _        _   __  __ _                  __  __ ____  
+ * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
  * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
+ * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
+ * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,12 +15,11 @@
  *
  * @author PocketMine Team
  * @link http://www.pocketmine.net/
- *
+ * 
  *
 */
 
 namespace pocketmine\utils;
-
 use pocketmine\scheduler\FileWriteTask;
 use pocketmine\Server;
 
@@ -208,7 +207,7 @@ class Config{
 			}catch(\Throwable $e){
 				$logger = Server::getInstance()->getLogger();
 				$logger->critical("Could not save Config " . $this->file . ": " . $e->getMessage());
-				if(\pocketmine\DEBUG > 1){
+				if(\pocketmine\DEBUG > 1 and $logger instanceof MainLogger){
 					$logger->logException($e);
 				}
 			}
@@ -328,7 +327,7 @@ class Config{
 		foreach($this->nestedCache as $nestedKey => $nvalue){
 			if(substr($nestedKey, 0, strlen($k) + 1) === ($k . ".")){
 				unset($this->nestedCache[$nestedKey]);
-			}
+  			}
 		}
 	}
 

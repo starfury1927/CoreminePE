@@ -21,10 +21,13 @@
 
 namespace pocketmine\entity;
 
+
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\ExplosionPrimeEvent;
 use pocketmine\level\Explosion;
+use pocketmine\level\Level;
 use pocketmine\nbt\tag\ByteTag;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 
@@ -41,6 +44,13 @@ class PrimedTNT extends Entity implements Explosive{
 	protected $fuse;
 
 	public $canCollide = false;
+
+	private $dropItem = true;
+
+	public function __construct(Level $level, CompoundTag $nbt, bool $dropItem = true){
+		parent::__construct($level, $nbt);
+		$this->dropItem = $dropItem;
+	}
 
 
 	public function attack($damage, EntityDamageEvent $source){
@@ -127,10 +137,10 @@ class PrimedTNT extends Entity implements Explosive{
 	}
 
 	public function explode(){
-		$this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 4));
+		$this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 4, $this->dropItem));
 
 		if(!$ev->isCancelled()){
-			$explosion = new Explosion($this, $ev->getForce(), $this);
+			$explosion = new Explosion($this, $ev->getForce(), $this, $ev->dropItem());
 			if($ev->isBlockBreaking()){
 				$explosion->explodeA();
 			}

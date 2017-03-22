@@ -70,12 +70,12 @@ namespace pocketmine {
 	use pocketmine\utils\ServerKiller;
 	use pocketmine\utils\Terminal;
 	use pocketmine\utils\Utils;
-	use pocketmine\wizard\SetupWizard;
-	use raklib\RakLib;
+	use pocketmine\wizard\Installer;
 
-	const VERSION = "1.6.2dev";
+	const VERSION = ""; //will be set by CI to a git hash
 	const API_VERSION = "3.0.0-ALPHA4";
-	const CODENAME = "Unleashed";
+	const CODENAME = "Enopoio";
+	const GENISYS_API_VERSION = '2.0.0';
 
 	/*
 	 * Startup code. Do not look at it, it may harm you.
@@ -103,11 +103,6 @@ namespace pocketmine {
 	}
 
 	if(!class_exists("ClassLoader", false)){
-		if(!is_file(\pocketmine\PATH . "src/spl/ClassLoader.php")){
-			echo "[CRITICAL] Unable to find the PocketMine-SPL library." . PHP_EOL;
-			echo "[CRITICAL] Please use provided builds or clone the repository recursively." . PHP_EOL;
-			exit(1);
-		}
 		require_once(\pocketmine\PATH . "src/spl/ClassLoader.php");
 		require_once(\pocketmine\PATH . "src/spl/BaseClassLoader.php");
 	}
@@ -117,14 +112,6 @@ namespace pocketmine {
 	$autoloader->addPath(\pocketmine\PATH . "src" . DIRECTORY_SEPARATOR . "spl");
 	$autoloader->register(true);
 
-	try{
-		if(!class_exists(RakLib::class)){
-			throw new \Exception;
-		}
-	}catch(\Exception $e){
-		echo "[CRITICAL] Unable to find the RakLib library." . PHP_EOL;
-		exit(1);
-	}
 
 	set_time_limit(0); //Who set it to 30 seconds?!?!
 
@@ -186,7 +173,7 @@ namespace pocketmine {
 			$default_timezone = timezone_name_from_abbr($timezone);
 			ini_set("date.timezone", $default_timezone);
 			date_default_timezone_set($default_timezone);
-		}else{
+		} else {
 			date_default_timezone_set($timezone);
 		}
 	}
@@ -334,7 +321,7 @@ namespace pocketmine {
 				if(function_exists("posix_kill")){
 					posix_kill($pid, SIGKILL);
 				}else{
-					exec("kill -9 " . ((int) $pid) . " > /dev/null 2>&1");
+					exec("kill -9 " . ((int)$pid) . " > /dev/null 2>&1");
 				}
 		}
 	}
@@ -412,6 +399,10 @@ namespace pocketmine {
 		++$errors;
 	}
 
+	if(!extension_loaded("uopz")){
+		//$logger->notice("Couldn't find the uopz extension. Some functions may be limited");
+	}
+
 	if(extension_loaded("pocketmine")){
 		if(version_compare(phpversion("pocketmine"), "0.0.1") < 0){
 			$logger->critical("You have the native PocketMine extension, but your version is lower than 0.0.1.");
@@ -421,7 +412,7 @@ namespace pocketmine {
 			++$errors;
 		}
 	}
-
+	
 	if(extension_loaded("xdebug")){
 		$logger->warning("
 
@@ -447,35 +438,24 @@ namespace pocketmine {
 	}
 
 	if($errors > 0){
-		$logger->critical("Please use the installer provided on the homepage, or recompile PHP again.");
+		$logger->critical("Please update your PHP from itxtech.org/genisys/get/, or recompile PHP again.");
 		$logger->shutdown();
 		$logger->join();
 		exit(1); //Exit with error
 	}
 
-	$gitHash = str_repeat("00", 20);
-	if(file_exists(\pocketmine\PATH . ".git/HEAD")){ //Found Git information!
-		$ref = trim(file_get_contents(\pocketmine\PATH . ".git/HEAD"));
-		if(preg_match('/^[0-9a-f]{40}$/i', $ref)){
-			$gitHash = strtolower($ref);
-		}elseif(substr($ref, 0, 5) === "ref: "){
-			$refFile = \pocketmine\PATH . ".git/" . substr($ref, 5);
-			if(is_file($refFile)){
-				$gitHash = strtolower(trim(file_get_contents($refFile)));
-			}
-		}
+	if(file_exists(\pocketmine\PATH . ".git/refs/heads/master")){ //Found Git information!
+		define('pocketmine\GIT_COMMIT', strtolower(trim(file_get_contents(\pocketmine\PATH . ".git/refs/heads/master"))));
+	}else{
+		define('pocketmine\GIT_COMMIT', "0000000000000000000000000000000000000000");
 	}
-
-	define('pocketmine\GIT_COMMIT', $gitHash);
-
 
 	@define("ENDIANNESS", (pack("d", 1) === "\77\360\0\0\0\0\0\0" ? Binary::BIG_ENDIAN : Binary::LITTLE_ENDIAN));
 	@define("INT32_MASK", is_int(0xffffffff) ? 0xffffffff : -1);
 	@ini_set("opcache.mmap_base", bin2hex(random_bytes(8))); //Fix OPCache address errors
 
-
 	if(!file_exists(\pocketmine\DATA . "server.properties") and !isset($opts["no-wizard"])){
-		$installer = new SetupWizard();
+		$installer = new Installer();
 		if(!$installer->run()){
 			$logger->shutdown();
 			$logger->join();
@@ -483,9 +463,8 @@ namespace pocketmine {
 		}
 	}
 
-
 	if(\Phar::running(true) === ""){
-		$logger->warning("Non-packaged PocketMine-MP installation detected, do not use on production.");
+		$logger->warning("Non-packaged Genisys installation detected, do not use on production.");
 	}
 
 	ThreadManager::init();

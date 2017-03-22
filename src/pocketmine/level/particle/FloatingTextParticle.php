@@ -46,6 +46,14 @@ class FloatingTextParticle extends Particle{
 		$this->title = $title;
 	}
 
+	public function getText(){
+		return $this->text;
+	}
+
+	public function getTitle(){
+		return $this->title;
+	}
+
 	public function setText($text){
 		$this->text = $text;
 	}
@@ -53,7 +61,6 @@ class FloatingTextParticle extends Particle{
 	public function setTitle($title){
 		$this->title = $title;
 	}
-
 	public function isInvisible(){
 		return $this->invisible;
 	}

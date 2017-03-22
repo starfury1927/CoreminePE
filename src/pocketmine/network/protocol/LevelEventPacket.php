@@ -2,11 +2,11 @@
 
 /*
  *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
+ *  ____            _        _   __  __ _                  __  __ ____  
+ * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
  * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
+ * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
+ * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  *
  * @author PocketMine Team
  * @link http://www.pocketmine.net/
- *
+ * 
  *
 */
 
@@ -41,8 +41,8 @@ class LevelEventPacket extends DataPacket{
 	const EVENT_SOUND_DOOR_CRASH = 1012;
 
 	const EVENT_SOUND_ENDERMAN_TELEPORT = 1018;
-
-	const EVENT_SOUND_ANVIL_BREAK = 1020;
+	
+	const EVENT_SOUND_ANVIL_BREAK = 1020; //This sound is played on the anvil's final use, NOT when the block is broken.
 	const EVENT_SOUND_ANVIL_USE = 1021;
 	const EVENT_SOUND_ANVIL_FALL = 1022;
 
@@ -61,7 +61,7 @@ class LevelEventPacket extends DataPacket{
 
 	const EVENT_PARTICLE_SHOOT = 2000;
 	const EVENT_PARTICLE_DESTROY = 2001;
-	const EVENT_PARTICLE_SPLASH = 2002;
+	const EVENT_PARTICLE_SPLASH = 2002; //This is actually the splash potion sound with particles
 	const EVENT_PARTICLE_EYE_DESPAWN = 2003;
 	const EVENT_PARTICLE_SPAWN = 2004;
 

@@ -35,10 +35,16 @@ class InventoryType{
 	const FURNACE = 3;
 	const CRAFTING = 4;
 	const WORKBENCH = 5;
-	const STONECUTTER = 6;
+	//const STONECUTTER = 6;
 	const BREWING_STAND = 7;
 	const ANVIL = 8;
 	const ENCHANT_TABLE = 9;
+	const DISPENSER = 10;
+	const DROPPER = 11;
+	const HOPPER = 12;
+	const ENDER_CHEST = 13;
+
+	const PLAYER_FLOATING = 254;
 
 	private static $default = [];
 
@@ -52,7 +58,7 @@ class InventoryType{
 	 * @return InventoryType
 	 */
 	public static function get($index){
-		return static::$default[$index] ?? null;
+		return isset(static::$default[$index]) ? static::$default[$index] : null;
 	}
 
 	public static function init(){
@@ -71,7 +77,13 @@ class InventoryType{
 			static::FURNACE =>       new InventoryType(3,       "Furnace",      InventoryNetworkIds::FURNACE), //2 INPUT, 1 OUTPUT
 			static::ENCHANT_TABLE => new InventoryType(2,       "Enchant",      InventoryNetworkIds::ENCHANTMENT), //1 INPUT/OUTPUT, 1 LAPIS
 			static::BREWING_STAND => new InventoryType(4,       "Brewing",      InventoryNetworkIds::BREWING_STAND), //1 INPUT, 3 POTION
-			static::ANVIL =>         new InventoryType(3,       "Anvil",        InventoryNetworkIds::ANVIL) //2 INPUT, 1 OUTP
+			static::ANVIL =>         new InventoryType(3,       "Anvil",        InventoryNetworkIds::ANVIL), //2 INPUT, 1 OUTPUT
+			static::DISPENSER =>     new InventoryType(9,       "Dispenser",    InventoryNetworkIds::DISPENSER), //9 CONTAINER
+			static::DROPPER =>       new InventoryType(9,       "Dropper",      InventoryNetworkIds::DROPPER), //9 CONTAINER
+			static::HOPPER =>        new InventoryType(5,       "Hopper",       InventoryNetworkIds::HOPPER), //5 CONTAINER
+			static::ENDER_CHEST =>   new InventoryType(27,      "Ender Chest",  InventoryNetworkIds::CONTAINER),
+
+			static::PLAYER_FLOATING => new InventoryType(36, "Floating", null) //Mirror all slots of main inventory (needed for large item pickups)
 		];
 	}
 

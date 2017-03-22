@@ -251,9 +251,9 @@ class McRegion extends BaseLevelProvider{
 			"initialized" => new ByteTag("initialized", 1),
 			"GameType" => new IntTag("GameType", 0),
 			"generatorVersion" => new IntTag("generatorVersion", 1), //2 in MCPE
-			"SpawnX" => new IntTag("SpawnX", 256),
+			"SpawnX" => new IntTag("SpawnX", 128),
 			"SpawnY" => new IntTag("SpawnY", 70),
-			"SpawnZ" => new IntTag("SpawnZ", 256),
+			"SpawnZ" => new IntTag("SpawnZ", 128),
 			"version" => new IntTag("version", 19133),
 			"DayTime" => new IntTag("DayTime", 0),
 			"LastPlayed" => new LongTag("LastPlayed", microtime(true) * 1000),

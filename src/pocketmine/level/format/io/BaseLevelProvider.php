@@ -98,7 +98,7 @@ abstract class BaseLevelProvider implements LevelProvider{
 	}
 
 	public function setSeed($value){
-		$this->levelData->RandomSeed = new LongTag("RandomSeed", $value);
+		$this->levelData->RandomSeed = new LongTag("RandomSeed", (int) $value);
 	}
 
 	public function getSpawn() : Vector3{
